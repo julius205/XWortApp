@@ -7,7 +7,7 @@ const LetterInput = forwardRef(
       onChange(inputValue);
     };
 
-    const inputClassName = `letter-input w-[5rem] h-[5rem] text-center border-4 text-5xl mb-1 mr-1 border-black ${
+    const inputClassName = `letter-input w-[5rem] h-[5rem] text-center border-4 text-5xl mb-1 mr-1 ${
       inputState === "right"
         ? "border-green-600 bg-[#f0c08d] text-black" // Grüne Border für den Zustand "right"
         : inputState === "wrong"

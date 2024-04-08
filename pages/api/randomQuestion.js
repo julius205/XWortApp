@@ -1,22 +1,20 @@
+// Importiere die erforderlichen Module
 import connectDB from "../../lib/db";
 import KreuzwortModel from "../../models/KreuzwortModel";
 
-const ONE_HOUR = 3600; // Sekunden
-
-// In-Memory-Cache
-let cachedEntry = null;
-let lastUpdated = null;
-
 export default async function handler(req, res) {
-  const shouldUpdateCache = !cachedEntry || Date.now() - lastUpdated > ONE_HOUR;
+  await connectDB();
 
-  if (shouldUpdateCache) {
-    await connectDB();
-    cachedEntry = await KreuzwortModel.aggregate([{ $sample: { size: 1 } }]);
-    lastUpdated = Date.now();
+  try {
+    const randomEntry = await KreuzwortModel.aggregate([
+      { $sample: { size: 1 } },
+    ]);
+
+    // Sende die Antwort mit dem zufälligen Eintrag als JSON zurück
+    res.status(200).json({ kreuzwort: randomEntry });
+  } catch (error) {
+    // Handle Fehler, falls welche auftreten
+    console.error("Error fetching random question:", error);
+    res.status(500).json({ error: "Error fetching random question" });
   }
-
-  // Sende die Antwort mit dem zufälligen Eintrag als JSON zurück
-  res.setHeader("Cache-Control", `max-age=${ONE_HOUR}`);
-  res.status(200).json({ kreuzwort: cachedEntry });
 }

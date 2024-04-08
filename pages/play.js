@@ -67,18 +67,18 @@ const Play = () => {
       })
       .then((data) => {
         console.log("Hole Frage aus der API");
-        console.log("kreuzwortdata: ", data.kreuzwort);
+        console.log("kreuzwortdata: ", data.kreuzwort[0]);
         // Daten erfolgreich erhalten, setze Frage und Antworten
-        setQuestion(data.kreuzwort.frage);
+        setQuestion(data.kreuzwort[0].frage);
         // Wähle einen zufälligen Eintrag aus den Antworten
         const randomIndex = Math.floor(
-          Math.random() * data.kreuzwort.antworten.length
+          Math.random() * data.kreuzwort[0].antworten.length
         );
-        console.log("frage aus db: ", data.kreuzwort.frage);
-        setAnswer(data.kreuzwort.antworten[randomIndex]);
+        console.log("frage aus db: ", data.kreuzwort[0].frage);
+        setAnswer(data.kreuzwort[0].antworten[randomIndex]);
         // Initialisiere userInput mit der gleichen Länge wie die Antwort, gefüllt mit leeren Strings
         setUserInput(
-          Array(data.kreuzwort.antworten[randomIndex].length).fill("")
+          Array(data.kreuzwort[0].antworten[randomIndex].length).fill("")
         );
         const searchParams = new URLSearchParams(location.search);
         const difficultyParam = searchParams.get("difficulty");

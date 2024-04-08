@@ -9,7 +9,7 @@ const LetterInput = forwardRef(
 
     const inputClassName = `letter-input w-[5rem] h-[5rem] text-center border-4 text-5xl mb-1 mr-1 border-black ${
       inputState === "right"
-        ? "border-[#22b305] bg-[#a1805c] text-black" // Grüne Border für den Zustand "right"
+        ? "border-green-600 bg-[#f0c08d] text-black" // Grüne Border für den Zustand "right"
         : inputState === "wrong"
         ? "border-red-700 bg-[#a1805c] text-black" // Rote Border für den Zustand "wrong"
         : "" // Standard Border für den Zustand "waiting"

@@ -1,4 +1,3 @@
-// Importiere die erforderlichen Module
 import connectDB from "../../lib/db";
 import KreuzwortModel from "../../models/KreuzwortModel";
 

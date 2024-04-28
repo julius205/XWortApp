@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">xwortapp</string>
+    <string name="title_activity_main">xwortapp</string>
+    <string name="package_name">com.xwort.app</string>
+    <string name="custom_url_scheme">com.xwort.app</string>
+</resources>

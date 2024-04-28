@@ -1,7 +1,9 @@
 import LetterInput from "../components/LetterInput";
 import React, { useEffect, useRef, useState } from "react";
+import * as XLSX from "xlsx";
 
 const Play = () => {
+  const [data, setData] = useState([]);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState(null);
@@ -15,6 +17,73 @@ const Play = () => {
   useEffect(() => {
     calculateInitialLetters();
   }, [answer]);
+
+  const fetchRandomEntry = () => {
+    try {
+      // Lese die JSON-Datei
+      setInputState("waiting");
+      const jsonData = require("../lib/data.json");
+
+      // Wähle eine zufällige Zeile aus
+      const randomIndex = Math.floor(
+        Math.random() * jsonData.Kreuzwoerter.length
+      );
+      const randomEntry = jsonData.Kreuzwoerter[randomIndex];
+
+      // Speichere die Frage und wähle eine zufällige Antwort aus
+      setQuestion(randomEntry.Frage);
+      const answers = randomEntry.Antwort.split(", "); // Trenne die Antworten
+      const randomAnswerIndex = Math.floor(Math.random() * answers.length);
+      setAnswer(answers[randomAnswerIndex]); // Wähle eine zufällige Antwort
+      setUserInput(Array(answers[randomAnswerIndex].length).fill(""));
+      const searchParams = new URLSearchParams(location.search);
+      const difficultyParam = searchParams.get("difficulty");
+      setDifficulty(difficultyParam);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  };
+
+  /*
+  const fetchNewQuestion = () => {
+    console.log("versuche frage zu holen");
+    setInputState("waiting");
+    fetch(`/api/randomQuestion`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Hole Frage aus der API");
+        console.log("kreuzwortdata: ", data.kreuzwort[0]);
+        // Daten erfolgreich erhalten, setze Frage und Antworten
+        setQuestion(data.kreuzwort[0].frage);
+        // Wähle einen zufälligen Eintrag aus den Antworten
+        const randomIndex = Math.floor(
+          Math.random() * data.kreuzwort[0].antworten.length
+        );
+        console.log("frage aus db: ", data.kreuzwort[0].frage);
+        setAnswer(data.kreuzwort[0].antworten[randomIndex]);
+        // Initialisiere userInput mit der gleichen Länge wie die Antwort, gefüllt mit leeren Strings
+        setUserInput(
+          Array(data.kreuzwort[0].antworten[randomIndex].length).fill("")
+        );
+        const searchParams = new URLSearchParams(location.search);
+        const difficultyParam = searchParams.get("difficulty");
+        setDifficulty(difficultyParam);
+        console.log("Frage geholt: ", question);
+      })
+      .catch((error) => {
+        console.error("Error fetching random question:", error);
+        setError("Error fetching random question");
+      });
+  }; 
+  */
+  const fetchNewQuestion = () => {
+    fetchRandomEntry();
+  };
 
   const calculateInitialLetters = () => {
     if (answer.length > 0) {
@@ -53,42 +122,6 @@ const Play = () => {
       setInitialLetters(initialLetterIndices);
       setUserInput(initialInput);
     }
-  };
-
-  const fetchNewQuestion = () => {
-    console.log("versuche frage zu holen");
-    setInputState("waiting");
-    fetch(`/api/randomQuestion`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Hole Frage aus der API");
-        console.log("kreuzwortdata: ", data.kreuzwort[0]);
-        // Daten erfolgreich erhalten, setze Frage und Antworten
-        setQuestion(data.kreuzwort[0].frage);
-        // Wähle einen zufälligen Eintrag aus den Antworten
-        const randomIndex = Math.floor(
-          Math.random() * data.kreuzwort[0].antworten.length
-        );
-        console.log("frage aus db: ", data.kreuzwort[0].frage);
-        setAnswer(data.kreuzwort[0].antworten[randomIndex]);
-        // Initialisiere userInput mit der gleichen Länge wie die Antwort, gefüllt mit leeren Strings
-        setUserInput(
-          Array(data.kreuzwort[0].antworten[randomIndex].length).fill("")
-        );
-        const searchParams = new URLSearchParams(location.search);
-        const difficultyParam = searchParams.get("difficulty");
-        setDifficulty(difficultyParam);
-        console.log("Frage geholt: ", question);
-      })
-      .catch((error) => {
-        console.error("Error fetching random question:", error);
-        setError("Error fetching random question");
-      });
   };
 
   const handleInputChange = (index, value) => {
